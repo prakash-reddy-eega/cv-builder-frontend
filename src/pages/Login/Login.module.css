@@ -1,0 +1,73 @@
+.formControl {
+    margin-bottom: 1rem;
+  }
+  
+  .formControl input,
+  .formControl label {
+    display: block;
+  }
+  
+  .formControl label {
+    font-weight: bold;
+    color: black;
+    margin-bottom: 0.5rem;
+  }
+  
+  .formControl input,
+  .formControl select {
+    font: inherit;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 25rem;
+  }
+  
+  .formControl input:focus {
+    outline: none;
+    border-color: #240370;
+    background-color: #e0d4fd;
+  }
+  
+  .controlGroup {
+    display: flex;
+    flex-direction: column;
+    column-gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .controlGroup .formControl {
+    /* min-width: 10rem; */
+    flex: 1;
+  }
+  
+  .formActions {
+    text-align: right;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  
+  .formAtions button {
+    margin-left: 1rem;
+  }
+  .text{
+      color: black;
+      margin-right: 1rem;
+    }
+  
+  .invalid input {
+    border: 1px solid #b40e0e;
+    background-color: #fddddd;
+  }
+  
+  .invalid input:focus {
+    border-color: #ff8800;
+    background-color: #fbe8d2;
+  }
+  
+  .errorText {
+    color: #b40e0e;
+  }
+  

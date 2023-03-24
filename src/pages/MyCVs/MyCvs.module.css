@@ -1,0 +1,35 @@
+.div{
+    padding: 20px;
+}
+.container{
+    display: flex;
+    justify-content: space-between;
+}
+.create{
+    background-color: #1ad1b9;
+    max-width: 200px;
+}
+.create:hover,
+  .template:active {
+    background-color: #1fc4ae;;
+  }
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    font-family: Arial, sans-serif;
+  }
+  
+  th, td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #1f1f1f;
+  }
+  
+  th {
+    background-color: #1f1f1f;
+  }
+  
+  tr:hover {
+    background-color: rgb(73, 72, 72);
+  }  

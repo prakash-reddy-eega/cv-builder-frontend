@@ -1,0 +1,14 @@
+.profileNameContainer{
+    display: flex;
+    align-items: center;
+    margin-top: 0px;
+}  
+.profile{
+    height: 80px;
+    width: 80px;
+    border-radius: 10px;
+}
+
+.profileNameContainer div{
+    margin-left: 10px;
+}

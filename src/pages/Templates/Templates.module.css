@@ -1,0 +1,65 @@
+.container{
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+
+}
+.container h3{
+    padding: 20px;
+}
+.sidebarBackground{
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    position: fixed;
+    top: 0px;
+    opacity: 0.5;
+}
+.buttonContainer{
+    display: flex;
+    justify-content: center;
+}
+
+.create{
+    background-color: rgb(255, 100, 100);
+}
+.create:hover,
+  .create:active {
+    background-color: rgb(243, 84, 84);;
+  }
+.template{
+    background-color: #1ad1b9;
+    max-width: 250px;
+}
+.template:hover,
+  .template:active {
+    background-color: #1fc4ae;;
+  }
+.card{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 10px;
+}  
+.templateContainer{
+    width: 100%;
+    height: 100vh;
+    max-width: 210mm;
+    max-height: 297mm;
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+}  
+@media screen and (max-width: 800px){
+    .templateContainer{
+        width: 500px;
+        max-height: 700px;
+    }
+}
+@media screen and (max-width: 500px){
+    .templateContainer{
+        width: 400px;
+        height: 500px;
+    }
+}

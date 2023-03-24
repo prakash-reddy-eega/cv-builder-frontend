@@ -1,0 +1,16 @@
+.div{
+    display: flex;
+    flex-direction: row;
+
+}
+.inputsContainer{
+    width: 100%;
+
+}
+.previewContainer{
+    width: 100%;
+    min-height: 100vh;
+}
+.inputsFeildsCard{
+    transition: bottom 0.9s ease-in-out;
+}

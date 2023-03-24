@@ -6,6 +6,9 @@ import { ErrPage } from './pages/ErrPage/ErrPage';
 import {Templates} from './pages/Templates/Templates'
 import { MyCVs } from './pages/MyCVs/MyCvs';
 import { Profile } from './pages/Profile/Profile';
+import { SignUp } from './pages/SignUp/SignUp';
+import { Navigate } from 'react-router-dom';
+import { CreateCv } from './pages/CreateCv/CreateCv';
 
 const router = createBrowserRouter([
   {
@@ -13,11 +16,14 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <ErrPage />,
     children: [
+      {path: '/home', element:<Navigate to='/' replace={true} />},
       {path: '/', element: <Home/> },
       {path:'/login', element: <Login/>},
       {path:'/templates', element: <Templates/>},
       {path:'/myCVs', element: <MyCVs/>},
       {path:'/profile', element: <Profile/>},
+      {path:'/signup', element: <SignUp/>},
+      {path: '/create', element: <CreateCv/>}
   ]},
 ]);
 
