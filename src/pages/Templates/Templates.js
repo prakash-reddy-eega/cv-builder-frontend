@@ -5,7 +5,6 @@ import classes from "./Templates.module.css";
 import Button from "../Home/Button";
 import SideBar from "../../UI/SideBar";
 import { Link } from "react-router-dom";
-import Default from "../../layouts/Default";
 import { DEFAULT, LONDON, SYDNEY } from "../../utils/constants";
 
 export const Templates = () => {

@@ -1,0 +1,17 @@
+.div{
+    margin-top: 20px;
+}
+.div ol{
+    list-style-type: none;
+}
+
+.jobRoleContainer span{
+    font-weight: 500;
+    font-size: 18px;
+    color: rgb(36, 36, 36);
+}
+.dateContainer span{
+    font-weight: 500;
+    font-size: 15px;
+    color: rgb(80, 80, 80);
+}

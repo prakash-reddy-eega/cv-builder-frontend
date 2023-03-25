@@ -16,7 +16,7 @@ export const DUMMY_CV = {
         "Experienced and driven Financial Analyst with an impressive background of managing multi-million dollar budgets while providing analysis and account support within product development departments. Worked to reduce business expenses and develop logical and advantageous operating plan budgets. Experience creating quarterly accruals based on trends and forecasted expenses.",
     },
   ],
-  employmentDetailstion: [
+  employmentDetails: [
     {
       jobTitle: "Financial Analyst",
       employer: "GEO Corp.",

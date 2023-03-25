@@ -1,46 +1,620 @@
-import { Preview } from "../../components/Preview/preview"
-import { useState } from "react"
-import classes from './CreateCv.module.css'
-import { DUMMY_CV } from "../../utils/constants"
-import { InputCard } from "../../UI/InputCard"
+import { Preview } from "../../components/Preview/preview";
+import { useState } from "react";
+import classes from "./CreateCv.module.css";
+import { InputCard } from "../../UI/InputCard";
+import { DUMMY_PROFILE } from "../../utils/constants";
+import { Link } from 'react-scroll';
+
+const generateId = (count = 0) => {
+  const timeStamp = +new Date();
+  const id = timeStamp + count.toString();
+  return id;
+};
+
+const basicDetailsToBeAdd = {
+  name: "",
+  wantedJobTitle: "",
+  profile: "",
+  email: "",
+  phone: "",
+  address: "",
+  city: "",
+  state: "",
+  pin: "",
+  introduction: "",
+  cardOpenToggle: false,
+};
+const employmentDeatilsToBeAdd = {
+  jobTitle: "",
+  employer: "",
+  city: "",
+  startDate: "",
+  endDate: "",
+  cardOpenToggle: false,
+};
+
+const projectsToBeAdd = {
+  projectName: '',
+  projectDescriptions: '',
+  cardOpenToggle: false,
+}
+
+const skillsToBeAdd = {
+  skillsList: '',
+  cardOpenToggle: false,
+}
+
+const educationDetailsToBeAdd = {
+  cardOpenToggle: false,
+  college: '',
+  degree: '',
+  city: '',
+  startDate: '',
+  endDate: '',
+  description: ''
+}
+
+const socialProfilesToBeAdd = {
+  cardOpenToggle: false,
+  label: '',
+  link: ''
+}
 
 export const CreateCv = () => {
-    const [cvData, setCvData] = useState([])
-    const [sectionsCount, setSectionsCount] = useState({employmentDetails: 1,education: 1, socialProfiles: 1})
-    const [basicDetailsOpen, setbasicDetailsOpen] = useState(false)
-    const [employmentDetailsOpen, setemploymentDetailsOpen] = useState(false)
-    const onToggeleBasicDetailsCard = () => {
-        setbasicDetailsOpen(!basicDetailsOpen)
+  const [cvData, setCvData] = useState({
+    basicDetails: [{ ...basicDetailsToBeAdd, id: generateId() }],
+    employmentDetails: [{ ...employmentDeatilsToBeAdd, id: generateId() }],
+    projects: [{...projectsToBeAdd, id: generateId()}],
+    skills: [{...skillsToBeAdd, id: generateId()}],
+    education: [{...educationDetailsToBeAdd, id: generateId()}],
+    socialprofiles: [{...socialProfilesToBeAdd, id: generateId()}]
+  });
+  const { basicDetails, employmentDetails,projects, skills, education, socialprofiles } = cvData;
+
+  window.addEventListener("beforeunload", (ev) => 
+{  
+    ev.preventDefault();
+    return ev.returnValue = 'Are you sure you want to close?';
+});
+//removing
+  const removeImage = () => {
+    const profileImageRemoved = [{...basicDetails[0], profile: ''}]
+    setCvData({...cvData, basicDetails: profileImageRemoved})
+  }
+//getting image
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      let reader = new FileReader();
+      reader.onload = (event) => {
+        const profileImageAdded = [{...basicDetails[0], profile: event.target.result}]
+        setCvData({...cvData, basicDetails: profileImageAdded})
+      };
+      reader.readAsDataURL(e.target.files[0]);
     }
-    const onToggeleEmploymentDetailsCard = () => {
-        setemploymentDetailsOpen(!employmentDetailsOpen)
-    }
-    return<>
-        <div className={classes.div}>
-        <div className={classes.inputsContainer}>
-          <div >
-            <h4>Basic Details</h4>
-            <InputCard label='Basic Details' toggle={onToggeleBasicDetailsCard} isOpen={basicDetailsOpen}>
-              {basicDetailsOpen && <div className={classes.inputsFeildsCard}>  
-                <input/>
-                <label>name</label>
-              </div> } 
-            </InputCard>
-          </div>
-          <div>
-            <h4>Employement Details</h4>
-            <InputCard label={`Employment Details-${sectionsCount.employmentDetails}`} toggle={onToggeleEmploymentDetailsCard} isOpen={employmentDetailsOpen}>
-              {employmentDetailsOpen && <div className={classes.inputsFeildsCard}>  
-                <input/>
-                <label>name</label>
-              </div> } 
-            </InputCard>
-          </div>
-        </div>
-        <div className={classes.previewContainer}>
-        <h3>Cv Preview</h3>
-        <Preview cvData={DUMMY_CV}/>
-        </div>
-    </div>
-    </>
+  };
+//on change on employment details
+  const onChangeEmployerHandler = (event) => {
+    const name = event.target.name
+    const [key, index] = name.split(',')
+    employmentDetails[index][key] = event.target.value
+    setCvData({...cvData, employmentDetails: employmentDetails})
+  }
+//on change on social profiles list
+const onChangeSocialProfileHandler = (event) => {
+  const name = event.target.name
+  const [key, index] = name.split(',')
+  socialprofiles[index][key] = event.target.value
+  setCvData({...cvData, socialprofiles: socialprofiles})
+}  
+//on change on education details
+  const onChangeEducationHandler = (event) => {
+  const name = event.target.name
+  const [key, index] = name.split(',')
+  education[index][key] = event.target.value
+  setCvData({...cvData, education: education})
+}  
+// on change on project details  
+const onChangeProjectHandler  = (event) => {
+  const name = event.target.name
+  const [key, index] = name.split(',')
+  projects[index][key] = event.target.value
+  setCvData({...cvData, projects: projects})
 }
+//on change on basic details
+  const onChangeHandler = (event) => {
+    const changedDetails = [{...basicDetails[0], [event.target.name]: event.target.value}]
+    setCvData({...cvData, basicDetails: changedDetails})
+  }
+//on change skills 
+const onChangeSkillsHandler = (event) => {
+  const changedDetails = [{...skills[0], [event.target.name]: event.target.value}]
+  setCvData({...cvData, skills: changedDetails})
+}
+  //card open for skills card 
+  const onToggeleSkillsCard = (id) => {
+    const updatedToggleOpenCard = skills.map((eachitem) => {
+      if (eachitem.id === id) {
+        const updatedObj = {
+          ...eachitem,
+          cardOpenToggle: !eachitem.cardOpenToggle,
+        };
+        return updatedObj;
+      }
+      return eachitem;
+    });
+    setCvData({ ...cvData, skills: updatedToggleOpenCard });
+  };
+  //card open for basic details
+  const onToggeleBasicDetailsCard = (id) => {
+    const updatedToggleOpenCard = basicDetails.map((eachitem) => {
+      if (eachitem.id === id) {
+        const updatedObj = {
+          ...eachitem,
+          cardOpenToggle: !eachitem.cardOpenToggle,
+        };
+        return updatedObj;
+      }
+      return eachitem;
+    });
+    setCvData({ ...cvData, basicDetails: updatedToggleOpenCard });
+  };
+  //card open for employment details
+  const onToggeleEmploymentDetailsCard = (id) => {
+    const updatedToggleOpenCard = employmentDetails.map((eachitem) => {
+      if (eachitem.id === id) {
+        const updatedObj = {
+          ...eachitem,
+          cardOpenToggle: !eachitem.cardOpenToggle,
+        };
+        return updatedObj;
+      }
+      return eachitem;
+    });
+    setCvData({ ...cvData, employmentDetails: updatedToggleOpenCard });
+  };
+    //card open for socila profile list
+    const onToggeleSocialprofileCard = (id) => {
+      const updatedToggleOpenCard = socialprofiles.map((eachitem) => {
+        if (eachitem.id === id) {
+          const updatedObj = {
+            ...eachitem,
+            cardOpenToggle: !eachitem.cardOpenToggle,
+          };
+          return updatedObj;
+        }
+        return eachitem;
+      });
+      setCvData({ ...cvData, socialprofiles: updatedToggleOpenCard });
+    };
+    //card open for education details
+    const onToggeleEducationCard = (id) => {
+      const updatedToggleOpenCard = education.map((eachitem) => {
+        if (eachitem.id === id) {
+          const updatedObj = {
+            ...eachitem,
+            cardOpenToggle: !eachitem.cardOpenToggle,
+          };
+          return updatedObj;
+        }
+        return eachitem;
+      });
+      setCvData({ ...cvData, education: updatedToggleOpenCard });
+    };
+  //card opening for project details 
+  const onToggeleProjectDetailsCard = (id) => {
+    const updatedToggleOpenCard = projects.map((eachitem) => {
+      if (eachitem.id === id) {
+        const updatedObj = {
+          ...eachitem,
+          cardOpenToggle: !eachitem.cardOpenToggle,
+        };
+        return updatedObj;
+      }
+      return eachitem;
+    });
+    setCvData({ ...cvData, projects: updatedToggleOpenCard });
+  };
+  //adding extra exployment details
+  const addAnotherEmployment = () => {
+  const count = employmentDetails.length;
+  const newId = generateId(count);
+  const newEmployment = { ...employmentDeatilsToBeAdd, id: newId };
+  const newEmploymentDetails = [...employmentDetails, newEmployment];
+  setCvData({ ...cvData, employmentDetails: newEmploymentDetails });
+  };
+   //adding extra social profile details
+   const addAnotherSocialprofile = () => {
+    const count = socialprofiles.length;
+    const newId = generateId(count);
+    const newSocialProfile = { ...socialProfilesToBeAdd, id: newId };
+    const newSocialprofileDetails = [...socialprofiles, newSocialProfile];
+    setCvData({ ...cvData, socialprofiles: newSocialprofileDetails });
+    };
+  //adding extra education details
+    const addAnotherEducation = () => {
+    const count = education.length;
+    const newId = generateId(count);
+    const newEducation = { ...educationDetailsToBeAdd, id: newId };
+    const newEducationDetails = [...education, newEducation];
+    setCvData({ ...cvData, education: newEducationDetails });
+    };
+  //adding extra projects to list 
+  const addAnotherProject = () => {
+    const count = projects.length;
+    const newId = generateId(count);
+    const newProject = { ...projectsToBeAdd, id: newId };
+    const newProjectDetails = [...projects, newProject];
+    setCvData({ ...cvData, projects: newProjectDetails });
+  };
+  //delete social profile records
+  const onClickDelateSocialprofileRecord = (id) => {
+    const updatedSocialprofileRecords = socialprofiles.filter(
+      (eachitem) => eachitem.id !== id
+    );
+    setCvData({ ...cvData, socialprofiles: updatedSocialprofileRecords });
+  };
+   //delete employment records
+   const onClickDelateEmploymentRecord = (id) => {
+    const updatedEmploymentRecords = employmentDetails.filter(
+      (eachitem) => eachitem.id !== id
+    );
+    setCvData({ ...cvData, employmentDetails: updatedEmploymentRecords });
+  };
+    //delete eduation records
+    const onClickDelateEducationRecord = (id) => {
+      const updatedEducationRecords = education.filter(
+        (eachitem) => eachitem.id !== id
+      );
+      setCvData({ ...cvData, education: updatedEducationRecords });
+    };
+  //delete project details 
+  const onClickDelateProjectRecord = (id) => {
+    const updatedProjectRecords = projects.filter(
+      (eachitem) => eachitem.id !== id
+    );
+    setCvData({ ...cvData, projects: updatedProjectRecords });
+  };
+  //employment details
+  const renderEmploymentDetailsInputs = (eachObj, index) => {
+    return (
+      <li key={eachObj.id}>
+        <InputCard
+          label={`Employment Details-${index + 1}`}
+          toggle={onToggeleEmploymentDetailsCard}
+          isOpen={eachObj.cardOpenToggle}
+          details={eachObj}
+          recordsCount={employmentDetails.length}
+          deleteRecord={onClickDelateEmploymentRecord}
+        >
+          {eachObj.cardOpenToggle && (
+            <div className={classes.inputsContainer}>
+              <div className={classes.inputsFeildsCard}>
+                  <div>
+                    <label>Job Title</label>
+                    <input type='text' name={`jobTitle,${index}`} onChange={onChangeEmployerHandler}/>
+                  </div>  
+                  <div>
+                  <div>
+                    <label>Employer</label>
+                    <input type='text' name={`employer,${index}`} onChange={onChangeEmployerHandler}/>
+                  </div>
+                  </div>
+              </div>
+              <div className={classes.inputsFeildsCard}>
+                  <div>
+                    <label>Start Date</label>
+                    <input type='date' name={`startDate,${index}`} onChange={onChangeEmployerHandler}/>
+                  </div>  
+                  <div>
+                  <div>
+                    <label>End Date</label>
+                    <input type='date' name={`endDate,${index}`} onChange={onChangeEmployerHandler}/>
+                  </div>
+                  </div>
+              </div>
+              <div className={classes.inputsFeildsCard}>
+                  <div>
+                    <label>City</label>
+                    <input type='text' name={`city,${index}`} onChange={onChangeEmployerHandler}/>
+                  </div>  
+                </div>
+            </div>
+          )}
+        </InputCard>
+      </li>
+    );
+  };
+
+  //projects inputs
+  const renderProjectsInputs = (eachObj, index) => {
+    return (
+      <li key={eachObj.id}>
+        <InputCard
+          label={`Project Details-${index + 1}`}
+          toggle={onToggeleProjectDetailsCard}
+          isOpen={eachObj.cardOpenToggle}
+          details={eachObj}
+          recordsCount={projects.length}
+          deleteRecord={onClickDelateProjectRecord}
+        >
+          {eachObj.cardOpenToggle && (
+            <div className={classes.inputsContainer}>
+              <div className={classes.inputsFeildsCard}>
+                  <div>
+                    <label>Project Name</label>
+                    <input type='text' name={`projectName,${index}`} onChange={onChangeProjectHandler}/>
+                  </div>  
+                </div>
+                <div className={classes.textArea}>
+                    <label>Project Description</label>
+                    <textarea rows="4" cols="50" name={`projectDescriptions,${index}`} placeholder="Describe About Your Project" onChange={onChangeProjectHandler}/>
+                  </div> 
+            </div>
+          )}
+        </InputCard>
+      </li>
+    );
+  };
+  //skills inputs
+    const renderSkillsInputs = () => {
+      return (<InputCard
+        label="Skills"
+        toggle={onToggeleSkillsCard}
+        isOpen={skills[0].cardOpenToggle}
+        details={skills[0]}
+        recordsCount={skills.length}
+      >
+        {skills[0].cardOpenToggle && (
+         <div> 
+            <div className={classes.textArea}>
+              <label>Add Your Skills</label>
+              <textarea rows="4" cols="50" name='skillsList' placeholder="add comma seperated skills" onChange={onChangeSkillsHandler}/>
+            </div>  
+          </div>
+        )}
+      </InputCard>)
+        
+    };
+//education inputs
+const renderEducationDetailsInputs = (eachObj, index) => {
+  return (
+    <li key={eachObj.id}>
+      <InputCard
+        label={`Education Details-${index + 1}`}
+        toggle={onToggeleEducationCard}
+        isOpen={eachObj.cardOpenToggle}
+        details={eachObj}
+        recordsCount={education.length}
+        deleteRecord={onClickDelateEducationRecord}
+      >
+        {eachObj.cardOpenToggle && (
+          <div className={classes.inputsContainer}>
+            <div className={classes.inputsFeildsCard}>
+                <div>
+                  <label>College Name</label>
+                  <input type='text' name={`college,${index}`} onChange={onChangeEducationHandler}/>
+                </div>  
+                <div>
+                <div>
+                  <label>Degree</label>
+                  <input type='text' name={`degree,${index}`} onChange={onChangeEducationHandler}/>
+                </div>
+                </div>
+            </div>
+            <div className={classes.inputsFeildsCard}>
+                <div>
+                  <label>Start Date</label>
+                  <input type='date' name={`startDate,${index}`} onChange={onChangeEducationHandler}/>
+                </div>  
+                <div>
+                <div>
+                  <label>End Date</label>
+                  <input type='date' name={`endDate,${index}`} onChange={onChangeEducationHandler}/>
+                </div>
+                </div>
+            </div>
+            <div className={classes.inputsFeildsCard}>
+                <div>
+                  <label>City</label>
+                  <input type='text' name={`city,${index}`} onChange={onChangeEducationHandler}/>
+                </div>  
+              </div>
+              <div> 
+            <div className={classes.textArea}>
+              <label>Decribe Your Education</label>
+              <textarea rows="4" cols="50" name={`description,${index}`} placeholder="Describe..." onChange={onChangeEducationHandler}/>
+            </div>  
+          </div>
+          </div>
+        )}
+      </InputCard>
+    </li>
+  );
+};
+//renderSocialProfileDetailsInputs
+const renderSocialProfileDetailsInputs = (eachObj, index) => {
+  return (
+    <li key={eachObj.id}>
+      <InputCard
+        label={`Social Profile-${index + 1}`}
+        toggle={onToggeleSocialprofileCard}
+        isOpen={eachObj.cardOpenToggle}
+        details={eachObj}
+        recordsCount={socialprofiles.length}
+        deleteRecord={onClickDelateSocialprofileRecord}
+      >
+        {eachObj.cardOpenToggle && (
+          <div className={classes.inputsContainer}>
+            <div className={classes.inputsFeildsCard}>
+                <div>
+                  <label>Social Profile Name</label>
+                  <input type='text' name={`label,${index}`} onChange={onChangeSocialProfileHandler}/>
+                </div>  
+                <div>
+                <div>
+                  <label>Link</label>
+                  <input type='text' name={`link,${index}`} onChange={onChangeSocialProfileHandler}/>
+                </div>
+                </div>
+            </div>
+          </div>
+        )}
+      </InputCard>
+    </li>
+  );
+};
+
+  return (
+    <>
+    <Link
+    activeClass="active"
+    to="section1"
+    spy={true}
+    smooth={true}
+    offset={-70}
+    duration={500}
+  >
+    <button className={classes.previewButton} type='button'>Preview</button>
+  </Link>
+      <div className={classes.div}>
+        <div className={classes.inputsContainer}>
+          {/* basic details */}
+          <div>
+            <h3>Basic Details</h3>
+            <InputCard
+              label="Basic Details"
+              toggle={onToggeleBasicDetailsCard}
+              isOpen={basicDetails[0].cardOpenToggle}
+              details={basicDetails[0]}
+              recordsCount={basicDetails.length}
+            >
+              {basicDetails[0].cardOpenToggle && (
+               <div> 
+                <div className={classes.inputsFeildsCard}>
+                  <div>
+                    <label>Wanted Job Title</label>
+                    <input type='text' name='wantedJobTitle' onChange={onChangeHandler} />
+                  </div>  
+                  <div>
+                    {basicDetails[0].profile && ( <div className={classes.imageContainer}> <img  src={basicDetails[0].profile } alt="profile pic" width="110" height="100"/>  <span className={classes.imageRemove} onClick={removeImage}>remove</span> </div> )}
+                    {!basicDetails[0].profile  && (<div> <img src={DUMMY_PROFILE} alt="profile pic" width="100" height="100"/> </div>)}
+                    <input type="file" accept="image/*" onChange={handleImageChange} />
+                  </div>
+                </div>
+                <div className={classes.inputsFeildsCard}>
+                  <div>
+                    <label>Name</label>
+                    <input type='text' name='name'  onChange={onChangeHandler}/>
+                  </div>  
+                  <div>
+                  <div>
+                    <label>Phone</label>
+                    <input type='text' name='phone' onChange={onChangeHandler}/>
+                  </div>
+                  </div>
+                </div>
+                <div className={classes.inputsFeildsCard}>
+                  <div>
+                    <label>Email</label>
+                    <input type='email' name='email' onChange={onChangeHandler}/>
+                  </div>  
+                  <div>
+                  <div>
+                    <label>Address</label>
+                    <input type='text' name='address' onChange={onChangeHandler}/>
+                  </div>
+                  </div>
+                </div>
+                <div className={classes.inputsFeildsCard}>
+                  <div>
+                    <label>City</label>
+                    <input type='text' name='city' onChange={onChangeHandler}/>
+                  </div>  
+                  <div>
+                  <div>
+                    <label>State</label>
+                    <input type='text' name='state' onChange={onChangeHandler}/>
+                  </div>
+                  </div>
+                </div>
+                <div className={classes.inputsFeildsCard}>
+                  <div>
+                    <label>PinCode</label>
+                    <input type='text' name='pin' onChange={onChangeHandler}/>
+                  </div>  
+                </div>
+                  <div className={classes.textArea}>
+                    <label>Professional Summaary</label>
+                    <textarea rows="4" cols="50" name='introduction' placeholder="give your introduction" onChange={onChangeHandler}/>
+                  </div>  
+                </div>
+              )}
+            </InputCard>
+          </div>
+          {/* Employment Details */}
+          <div>
+            <h3>Employement Details</h3>
+            <ul>
+              {employmentDetails.map((eachObj, index) => {
+                return renderEmploymentDetailsInputs(eachObj, index);
+              })}
+            </ul>
+            <p className={classes.addMore} onClick={addAnotherEmployment}>
+              {" "}
+              + Add one more Employment Details
+            </p>
+          </div>
+          {/* projects */}
+          <div>
+            <h3>Projects</h3>
+            <ul>
+              {projects.map((eachObj, index) => {
+                return renderProjectsInputs(eachObj, index);
+              })}
+            </ul>
+            <p className={classes.addMore} onClick={addAnotherProject}>
+              {" "}
+              + Add one more Project Details
+            </p>
+          </div>
+          {/* skills */}
+          <div>
+            <h3>Skills</h3>
+            {renderSkillsInputs()}
+          </div>
+           {/* Education Details */}
+           <div>
+            <h3>Education Details</h3>
+            <ul>
+              {education.map((eachObj, index) => {
+                return renderEducationDetailsInputs(eachObj, index);
+              })}
+            </ul>
+            <p className={classes.addMore} onClick={addAnotherEducation}>
+              {" "}
+              + Add one more Education Details
+            </p>
+          </div>
+          {/* Social Profiles */}
+          <div>
+            <h3>Social Profiles</h3>
+            <ul>
+              {socialprofiles.map((eachObj, index) => {
+                return renderSocialProfileDetailsInputs(eachObj, index);
+              })}
+            </ul>
+            <p className={classes.addMore} onClick={addAnotherSocialprofile}>
+              {" "}
+              + Add one more Social Profile
+            </p>
+          </div>
+        </div>
+        {/* previre */}
+        <div className={classes.previewContainer} id='section1'>
+            <h3>Cv Preview</h3>
+            <Preview cvData={cvData}/>
+        </div>
+      </div>
+    </>
+  );
+};
