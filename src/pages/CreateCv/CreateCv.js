@@ -1,9 +1,17 @@
 import { Preview } from "../../components/Preview/preview";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import classes from "./CreateCv.module.css";
 import { InputCard } from "../../UI/InputCard";
 import { DUMMY_PROFILE } from "../../utils/constants";
 import { Link } from 'react-scroll';
+import { Navigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { localCvDataActions } from "../../store/localCvData";
+import { saveCv } from "../../services/cv";
+import BackdropLoader from "../../UI/BackdropLoader";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+
 
 const generateId = (count = 0) => {
   const timeStamp = +new Date();
@@ -61,21 +69,50 @@ const socialProfilesToBeAdd = {
 }
 
 export const CreateCv = () => {
-  const [cvData, setCvData] = useState({
+  const preData = {
     basicDetails: [{ ...basicDetailsToBeAdd, id: generateId() }],
     employmentDetails: [{ ...employmentDeatilsToBeAdd, id: generateId() }],
     projects: [{...projectsToBeAdd, id: generateId()}],
     skills: [{...skillsToBeAdd, id: generateId()}],
     education: [{...educationDetailsToBeAdd, id: generateId()}],
     socialprofiles: [{...socialProfilesToBeAdd, id: generateId()}]
-  });
+  }
+  const [cvData, setCvData] = useState(preData);
   const { basicDetails, employmentDetails,projects, skills, education, socialprofiles } = cvData;
+  const [isLoading, setIsLoading] = useState(false)
+  const [isDirty, setIsDirty] = useState(false);
+  const navigate = useNavigate()
 
-  window.addEventListener("beforeunload", (ev) => 
-{  
-    ev.preventDefault();
-    return ev.returnValue = 'Are you sure you want to close?';
-});
+  const dispatch = useDispatch()
+  const localCvData = useSelector( state => state.localCv.localCvData)
+  const layoutStyle = useSelector( state => state.layoutStyle.layoutStyle)
+  useEffect(()=> {
+    if(cvData !== localCvData){
+      dispatch(localCvDataActions.onLocalCvDataChange(cvData))
+    }
+  }, [cvData])
+  useEffect( () => {
+    if(localCvData !== null){
+      setCvData(localCvData)
+    }
+  }, [])
+
+  //closing prompt
+
+
+
+
+
+
+
+  const isAuthenticated = useSelector( (state) => state.auth.isAuthenticated)
+    if(!isAuthenticated){
+        return <Navigate to='/login' replace={true}/>
+    }
+
+
+
+
 //removing
   const removeImage = () => {
     const profileImageRemoved = [{...basicDetails[0], profile: ''}]
@@ -96,29 +133,57 @@ export const CreateCv = () => {
   const onChangeEmployerHandler = (event) => {
     const name = event.target.name
     const [key, index] = name.split(',')
-    employmentDetails[index][key] = event.target.value
-    setCvData({...cvData, employmentDetails: employmentDetails})
+    const updated = employmentDetails.map( (eachObj, i) => {
+      if(i === Number(index)){
+        return {
+          ...eachObj, [key]: event.target.value
+        }
+      }
+      return eachObj
+    })
+    setCvData({...cvData, employmentDetails: updated})
   }
 //on change on social profiles list
 const onChangeSocialProfileHandler = (event) => {
   const name = event.target.name
   const [key, index] = name.split(',')
-  socialprofiles[index][key] = event.target.value
-  setCvData({...cvData, socialprofiles: socialprofiles})
+  const updated = socialprofiles.map( (eachObj, i) => {
+    if(i === Number(index)){
+      return {
+        ...eachObj, [key]: event.target.value
+      }
+    }
+    return eachObj
+  })
+  setCvData({...cvData, socialprofiles: updated})
 }  
 //on change on education details
   const onChangeEducationHandler = (event) => {
   const name = event.target.name
   const [key, index] = name.split(',')
-  education[index][key] = event.target.value
-  setCvData({...cvData, education: education})
+  const updated = education.map( (eachObj, i) => {
+    if(i === Number(index)){
+      return {
+        ...eachObj, [key]: event.target.value
+      }
+    }
+    return eachObj
+  })
+  setCvData({...cvData, education: updated})
 }  
 // on change on project details  
 const onChangeProjectHandler  = (event) => {
   const name = event.target.name
   const [key, index] = name.split(',')
-  projects[index][key] = event.target.value
-  setCvData({...cvData, projects: projects})
+  const updated = projects.map( (eachObj, i) => {
+    if(i === Number(index)){
+      return {
+        ...eachObj, [key]: event.target.value
+      }
+    }
+    return eachObj
+  })
+  setCvData({...cvData, projects: updated})
 }
 //on change on basic details
   const onChangeHandler = (event) => {
@@ -274,6 +339,38 @@ const onChangeSkillsHandler = (event) => {
     );
     setCvData({ ...cvData, projects: updatedProjectRecords });
   };
+
+//save cv details
+const onClickSaveCv = async() => {
+  const data = {template: layoutStyle, cvDetails: cvData}
+  try {
+    setIsLoading(true)
+    const response = await saveCv(data)
+    setIsLoading(false)
+    if (response.data.status === 1) {
+    toast.success(response.data.message);
+    setCvData(preData)
+    setTimeout(() => {
+      navigate('/myCvs', {replace: true });
+    }, 2000)
+    
+  } else if (response.data.status === 0) {
+    let message = "";
+    if (typeof response.data.data === "string") {
+      message = response.data.message;
+    } else {
+      message = response.data.data.errors[0].msg;
+    }
+    toast.error(message);
+  }
+} catch (error) {
+    console.log(error)
+    setIsLoading(false)
+    toast.error(error.response.data.message)
+}
+
+}
+
   //employment details
   const renderEmploymentDetailsInputs = (eachObj, index) => {
     return (
@@ -291,31 +388,31 @@ const onChangeSkillsHandler = (event) => {
               <div className={classes.inputsFeildsCard}>
                   <div>
                     <label>Job Title</label>
-                    <input type='text' name={`jobTitle,${index}`} onChange={onChangeEmployerHandler}/>
+                    <input type='text' name={`jobTitle,${index}`} onChange={onChangeEmployerHandler} value={employmentDetails[index].jobTitle}/>
                   </div>  
                   <div>
                   <div>
                     <label>Employer</label>
-                    <input type='text' name={`employer,${index}`} onChange={onChangeEmployerHandler}/>
+                    <input type='text' name={`employer,${index}`} onChange={onChangeEmployerHandler} value={employmentDetails[index].employer}/>
                   </div>
                   </div>
               </div>
               <div className={classes.inputsFeildsCard}>
                   <div>
                     <label>Start Date</label>
-                    <input type='date' name={`startDate,${index}`} onChange={onChangeEmployerHandler}/>
+                    <input type='date' name={`startDate,${index}`} onChange={onChangeEmployerHandler} value={employmentDetails[index].startDate}/>
                   </div>  
                   <div>
                   <div>
                     <label>End Date</label>
-                    <input type='date' name={`endDate,${index}`} onChange={onChangeEmployerHandler}/>
+                    <input type='date' name={`endDate,${index}`} onChange={onChangeEmployerHandler} value={employmentDetails[index].endDate}/>
                   </div>
                   </div>
               </div>
               <div className={classes.inputsFeildsCard}>
                   <div>
                     <label>City</label>
-                    <input type='text' name={`city,${index}`} onChange={onChangeEmployerHandler}/>
+                    <input type='text' name={`city,${index}`} onChange={onChangeEmployerHandler} value={employmentDetails[index].city}/>
                   </div>  
                 </div>
             </div>
@@ -342,12 +439,12 @@ const onChangeSkillsHandler = (event) => {
               <div className={classes.inputsFeildsCard}>
                   <div>
                     <label>Project Name</label>
-                    <input type='text' name={`projectName,${index}`} onChange={onChangeProjectHandler}/>
+                    <input type='text' name={`projectName,${index}`} onChange={onChangeProjectHandler} value={projects[index].projectName}/>
                   </div>  
                 </div>
                 <div className={classes.textArea}>
                     <label>Project Description</label>
-                    <textarea rows="4" cols="50" name={`projectDescriptions,${index}`} placeholder="Describe About Your Project" onChange={onChangeProjectHandler}/>
+                    <textarea rows="4" cols="50" name={`projectDescriptions,${index}`} placeholder="Describe About Your Project" onChange={onChangeProjectHandler} value={projects[index].projectName}/>
                   </div> 
             </div>
           )}
@@ -368,7 +465,7 @@ const onChangeSkillsHandler = (event) => {
          <div> 
             <div className={classes.textArea}>
               <label>Add Your Skills</label>
-              <textarea rows="4" cols="50" name='skillsList' placeholder="add comma seperated skills" onChange={onChangeSkillsHandler}/>
+              <textarea rows="4" cols="50" name='skillsList' placeholder="add comma seperated skills" onChange={onChangeSkillsHandler} value={skills[0].skillsList}/>
             </div>  
           </div>
         )}
@@ -392,37 +489,37 @@ const renderEducationDetailsInputs = (eachObj, index) => {
             <div className={classes.inputsFeildsCard}>
                 <div>
                   <label>College Name</label>
-                  <input type='text' name={`college,${index}`} onChange={onChangeEducationHandler}/>
+                  <input type='text' name={`college,${index}`} onChange={onChangeEducationHandler} value={education[index].college}/>
                 </div>  
                 <div>
                 <div>
                   <label>Degree</label>
-                  <input type='text' name={`degree,${index}`} onChange={onChangeEducationHandler}/>
+                  <input type='text' name={`degree,${index}`} onChange={onChangeEducationHandler} value={education[index].degree}/>
                 </div>
                 </div>
             </div>
             <div className={classes.inputsFeildsCard}>
                 <div>
                   <label>Start Date</label>
-                  <input type='date' name={`startDate,${index}`} onChange={onChangeEducationHandler}/>
+                  <input type='date' name={`startDate,${index}`} onChange={onChangeEducationHandler} value={education[index].startDate}/>
                 </div>  
                 <div>
                 <div>
                   <label>End Date</label>
-                  <input type='date' name={`endDate,${index}`} onChange={onChangeEducationHandler}/>
+                  <input type='date' name={`endDate,${index}`} onChange={onChangeEducationHandler} value={education[index].endDate}/>
                 </div>
                 </div>
             </div>
             <div className={classes.inputsFeildsCard}>
                 <div>
                   <label>City</label>
-                  <input type='text' name={`city,${index}`} onChange={onChangeEducationHandler}/>
+                  <input type='text' name={`city,${index}`} onChange={onChangeEducationHandler} value={education[index].city}/>
                 </div>  
               </div>
               <div> 
             <div className={classes.textArea}>
               <label>Decribe Your Education</label>
-              <textarea rows="4" cols="50" name={`description,${index}`} placeholder="Describe..." onChange={onChangeEducationHandler}/>
+              <textarea rows="4" cols="50" name={`description,${index}`} placeholder="Describe..." onChange={onChangeEducationHandler} value={education[index].description}/>
             </div>  
           </div>
           </div>
@@ -448,12 +545,12 @@ const renderSocialProfileDetailsInputs = (eachObj, index) => {
             <div className={classes.inputsFeildsCard}>
                 <div>
                   <label>Social Profile Name</label>
-                  <input type='text' name={`label,${index}`} onChange={onChangeSocialProfileHandler}/>
+                  <input type='text' name={`label,${index}`} onChange={onChangeSocialProfileHandler} value={socialprofiles[index].label}/>
                 </div>  
                 <div>
                 <div>
                   <label>Link</label>
-                  <input type='text' name={`link,${index}`} onChange={onChangeSocialProfileHandler}/>
+                  <input type='text' name={`link,${index}`} onChange={onChangeSocialProfileHandler} value={socialprofiles[index].link}/>
                 </div>
                 </div>
             </div>
@@ -466,6 +563,8 @@ const renderSocialProfileDetailsInputs = (eachObj, index) => {
 
   return (
     <>
+    <ToastContainer/>
+    <BackdropLoader show={isLoading}/>
     <Link
     activeClass="active"
     to="section1"
@@ -480,7 +579,7 @@ const renderSocialProfileDetailsInputs = (eachObj, index) => {
         <div className={classes.inputsContainer}>
           {/* basic details */}
           <div>
-            <h3>Basic Details</h3>
+            <h3>Basic Details <span className={classes.mandatory}>*mandatory</span></h3> 
             <InputCard
               label="Basic Details"
               toggle={onToggeleBasicDetailsCard}
@@ -493,7 +592,7 @@ const renderSocialProfileDetailsInputs = (eachObj, index) => {
                 <div className={classes.inputsFeildsCard}>
                   <div>
                     <label>Wanted Job Title</label>
-                    <input type='text' name='wantedJobTitle' onChange={onChangeHandler} />
+                    <input type='text' name='wantedJobTitle' onChange={onChangeHandler} value={basicDetails[0].wantedJobTitle} />
                   </div>  
                   <div>
                     {basicDetails[0].profile && ( <div className={classes.imageContainer}> <img  src={basicDetails[0].profile } alt="profile pic" width="110" height="100"/>  <span className={classes.imageRemove} onClick={removeImage}>remove</span> </div> )}
@@ -504,48 +603,48 @@ const renderSocialProfileDetailsInputs = (eachObj, index) => {
                 <div className={classes.inputsFeildsCard}>
                   <div>
                     <label>Name</label>
-                    <input type='text' name='name'  onChange={onChangeHandler}/>
+                    <input type='text' name='name'  onChange={onChangeHandler} value={basicDetails[0].name}/>
                   </div>  
                   <div>
                   <div>
                     <label>Phone</label>
-                    <input type='text' name='phone' onChange={onChangeHandler}/>
+                    <input type='text' name='phone' onChange={onChangeHandler} value={basicDetails[0].phone}/>
                   </div>
                   </div>
                 </div>
                 <div className={classes.inputsFeildsCard}>
                   <div>
                     <label>Email</label>
-                    <input type='email' name='email' onChange={onChangeHandler}/>
+                    <input type='email' name='email' onChange={onChangeHandler} value={basicDetails[0].email}/>
                   </div>  
                   <div>
                   <div>
                     <label>Address</label>
-                    <input type='text' name='address' onChange={onChangeHandler}/>
+                    <input type='text' name='address' onChange={onChangeHandler} value={basicDetails[0].address}/>
                   </div>
                   </div>
                 </div>
                 <div className={classes.inputsFeildsCard}>
                   <div>
                     <label>City</label>
-                    <input type='text' name='city' onChange={onChangeHandler}/>
+                    <input type='text' name='city' onChange={onChangeHandler} value={basicDetails[0].city}/>
                   </div>  
                   <div>
                   <div>
                     <label>State</label>
-                    <input type='text' name='state' onChange={onChangeHandler}/>
+                    <input type='text' name='state' onChange={onChangeHandler} value={basicDetails[0].state}/>
                   </div>
                   </div>
                 </div>
                 <div className={classes.inputsFeildsCard}>
                   <div>
                     <label>PinCode</label>
-                    <input type='text' name='pin' onChange={onChangeHandler}/>
+                    <input type='text' name='pin' onChange={onChangeHandler} value={basicDetails[0].pin}/>
                   </div>  
                 </div>
                   <div className={classes.textArea}>
                     <label>Professional Summaary</label>
-                    <textarea rows="4" cols="50" name='introduction' placeholder="give your introduction" onChange={onChangeHandler}/>
+                    <textarea rows="4" cols="50" name='introduction' placeholder="give your introduction" onChange={onChangeHandler} value={basicDetails[0].introduction}/>
                   </div>  
                 </div>
               )}
@@ -609,12 +708,13 @@ const renderSocialProfileDetailsInputs = (eachObj, index) => {
             </p>
           </div>
         </div>
-        {/* previre */}
+        {/* preview */}
         <div className={classes.previewContainer} id='section1'>
             <h3>Cv Preview</h3>
-            <Preview cvData={cvData}/>
+            <Preview cvData={cvData} layoutStyle={layoutStyle}/>
         </div>
       </div>
+      <button className={basicDetails[0].name? classes.saveButton: classes.disabledButton} type="button" onClick = {onClickSaveCv} disabled={basicDetails[0].name? false: true}>Save Your Cv</button>
     </>
   );
 };

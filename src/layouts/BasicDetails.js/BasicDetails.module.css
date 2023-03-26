@@ -2,6 +2,16 @@
     display: flex;
     justify-content: space-between;
 }
+.sydney{
+    background-color: rgb(156, 246, 216);
+    padding: 10px;
+    border-radius: 10px;
+}
+.london{
+    background-color: rgb(241, 169, 200);
+    padding: 10px;
+    border-radius: 10px;
+}
 .profileNameContainer{
     display: flex;
     align-items: center;

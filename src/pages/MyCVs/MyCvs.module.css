@@ -16,12 +16,13 @@
 .table {
     border-collapse: collapse;
     width: 100%;
-    max-width: 100%;
+    max-width: 1000px;
     font-family: Arial, sans-serif;
+    margin: auto;
   }
   
   th, td {
-    text-align: left;
+    text-align: center;
     padding: 8px;
     border-bottom: 1px solid #1f1f1f;
   }
@@ -33,3 +34,24 @@
   tr:hover {
     background-color: rgb(73, 72, 72);
   }  
+
+  .iconsContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+  .iconsContainer div{
+    cursor: pointer;
+  }
+  .cvNameContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .cvNameContainer p{
+    margin-right: 10px;
+  }
+  .cvNameContainer div{
+    margin-top: 1px;
+  }

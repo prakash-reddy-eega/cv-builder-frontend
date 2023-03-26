@@ -6,7 +6,10 @@
     color: black;
     padding: 30px;
     border-radius: 5px;
+    max-width: 21cm;
+    margin: 1cm auto;
   }
+
 .container{
     padding: 10px;
 }

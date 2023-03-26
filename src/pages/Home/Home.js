@@ -4,6 +4,8 @@ import classes from './Home.module.css'
 import Button from "./Button"
 import { Link } from "react-router-dom"
 
+
+
 export const Home = () => {
     const isAuthenticated = useSelector( (state) => state.auth.isAuthenticated)
     if(!isAuthenticated){

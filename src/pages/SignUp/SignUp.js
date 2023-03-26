@@ -11,6 +11,8 @@ import { authActions } from "../../store/auth";
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { TOKEN } from "../../utils/constants";
+import BackdropLoader from "../../UI/BackdropLoader";
+import { useState } from "react";
 
 const isNotEmpty = (value) => value.trim() !== "";
 const isEmail = (value) => value.includes("@");
@@ -18,6 +20,7 @@ const isMobileNumber = (value) => typeof(Number(value)) === "number" && value.le
 const isPassword = (value) => value.length >= 6
 
 export const SignUp = (props) => {
+  const [showBackdrop, setShowBackdrop] = useState(false)
   const {
     value: firstNameValue,
     isValid: firstNameIsValid,
@@ -95,7 +98,9 @@ export const SignUp = (props) => {
         confirmPassword: confirmPasswordValue
     }
     try {
+        setShowBackdrop(true)
         const response = await register(data)
+        setShowBackdrop(false)
     if (response.data.status === 1) {
         toast.success(response.data.message);
         resetFirstName();
@@ -118,6 +123,7 @@ export const SignUp = (props) => {
         toast.error(message);
       }
     } catch (error) {
+        setShowBackdrop(false)
         console.log(error)
         toast.error(error.response.data.message)
     }
@@ -147,6 +153,7 @@ export const SignUp = (props) => {
 
   return (
     <>
+    <BackdropLoader show={showBackdrop}/>
     <Card>
     <ToastContainer theme="colored"/>
       <form onSubmit={submitHandler} className={classes.formControl}>

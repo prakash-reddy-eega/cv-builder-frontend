@@ -1,10 +1,18 @@
 import classes from './BasicDetails.module.css'
+import { SYDNEY, LONDON } from '../../utils/constants'
 export const BasicDetails = (props) => {
-    const {basicDetails} = props
+    const {basicDetails, layoutStyle} = props
     const details = basicDetails.email || basicDetails.phone || basicDetails.city || basicDetails.state || basicDetails.pin || basicDetails.address
+    let headerClassname = ''
+    if(layoutStyle === SYDNEY){
+      headerClassname = classes.sydney
+    }
+    if(layoutStyle === LONDON){
+      headerClassname = classes.london
+    }
     return (
     <div>
-      <div className={classes.div}>
+      <header className={`${classes.div} ${headerClassname}`}>
           <div className={classes.profileNameContainer}>
         {basicDetails.profile && <img src={basicDetails.profile} className={classes.profile} />}
         <div>
@@ -21,7 +29,7 @@ export const BasicDetails = (props) => {
         {basicDetails.phone && <p>{basicDetails.phone}</p>}
         {basicDetails.email && <p>{basicDetails.email}</p>}
       </div>}
-    </div>
+    </header>
     {basicDetails.introduction && <div className={classes.introduction}>
       <h3>Profile</h3>
       <p>{basicDetails.introduction}</p>

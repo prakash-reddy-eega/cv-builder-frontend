@@ -1,0 +1,26 @@
+.saveButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font: inherit;
+    color: white;
+    padding: 1rem;
+    cursor: pointer;
+    border-radius: 30px;
+    font-weight: 500;
+    width: 200px;
+    border: none;
+    margin: 10px;
+    background-color: green;
+  }
+  
+  
+  .saveButton:hover,
+  .saveButton:active {
+    background-color: rgb(1, 170, 1);
+    border-bottom: solid 4px rgb(135, 137, 135);
+  }
+  
+  .saveButton:focus {
+    outline: none;
+  }

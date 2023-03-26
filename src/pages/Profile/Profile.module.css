@@ -1,0 +1,28 @@
+
+.profileContainer{
+    color: black;
+}
+.profileContainer h4{
+    color: brown;
+}
+.profileContainer button{
+    margin-left: 10px;
+    background: none;
+    border: none;
+    font-size: 17px;
+    color: green;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.profileContainer span{
+    margin-left: 10px;
+    background: none;
+    border: none;
+    font-size: 17px;
+    color: red;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+
+}

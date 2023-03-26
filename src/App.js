@@ -9,6 +9,9 @@ import { Profile } from './pages/Profile/Profile';
 import { SignUp } from './pages/SignUp/SignUp';
 import { Navigate } from 'react-router-dom';
 import { CreateCv } from './pages/CreateCv/CreateCv';
+import { ViewCv } from './components/ViewCv/ViewCv';
+import { EditCv } from './components/EditCv/EditCv';
+import { DownloadCv } from './components/Download/Download';
 
 const router = createBrowserRouter([
   {
@@ -23,7 +26,10 @@ const router = createBrowserRouter([
       {path:'/myCVs', element: <MyCVs/>},
       {path:'/profile', element: <Profile/>},
       {path:'/signup', element: <SignUp/>},
-      {path: '/create', element: <CreateCv/>}
+      {path: '/create', element: <CreateCv/>},
+      {path:'/view-cv', element: <ViewCv/>},
+      {path:'/edit-cv', element: <EditCv/>},
+      {path:'/download-cv', element: <DownloadCv/>}
   ]},
 ]);
 

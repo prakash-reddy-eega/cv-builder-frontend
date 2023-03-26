@@ -11,6 +11,9 @@ import { authActions } from "../../store/auth";
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { TOKEN } from "../../utils/constants";
+import BackdropLoader from "../../UI/BackdropLoader";
+import { useState } from "react";
+import { addCommonHeader } from "../../services/cv";
 
 const isNotEmpty = (value) => value.trim() !== "";
 const isPassword = (value) => value.length >= 6
@@ -24,14 +27,8 @@ export const Login = (props) => {
     inputBlurHandler: lastNameBlurHandler,
     reset: resetLastName,
   } = useInput(isNotEmpty);
-//   const {
-//     value: emailValue,
-//     isValid: emailIsValid,
-//     hasError: emailHasError,
-//     valueChangeHandler: emailChangeHandler,
-//     inputBlurHandler: emailBlurHandler,
-//     reset: resetEmail,
-//   } = useInput(isEmail);
+  const [showBackdrop, setShowBackdrop] = useState(false)
+
   const {
     value: passwordValue,
     isValid: passwordIsValid,
@@ -64,13 +61,16 @@ export const Login = (props) => {
         password: passwordValue,
     }
     try {
+        setShowBackdrop(true)
         const response = await login(data)
+        setShowBackdrop(false)
     if (response.data.status === 1) {
         toast.success(response.data.message);
         resetLastName();
         resetPassword();
         const token = JSON.stringify(response.data.data)
         localStorage.setItem(TOKEN, token)
+        addCommonHeader()
         dispatch(authActions.login())
         navigate('/', {replace: true });
       } else if (response.data.status === 0) {
@@ -83,6 +83,7 @@ export const Login = (props) => {
         toast.error(message);
       }
     } catch (error) {
+        setShowBackdrop(false)
         console.log(error)
         toast.error(error.response.data.message)
     }
@@ -101,6 +102,7 @@ export const Login = (props) => {
 
   return (
     <>
+    <BackdropLoader show={showBackdrop} />
     <Card>
     <ToastContainer theme="colored"/>
       <form onSubmit={submitHandler} className={classes.formControl}>

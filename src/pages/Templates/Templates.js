@@ -4,13 +4,17 @@ import { layoutStyleActions } from "../../store/LayoutStyle";
 import classes from "./Templates.module.css";
 import Button from "../Home/Button";
 import SideBar from "../../UI/SideBar";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { DEFAULT, LONDON, SYDNEY } from "../../utils/constants";
 
 export const Templates = () => {
   const dispath = useDispatch();
   const isOpen = useSelector((state) => state.layoutStyle.isOpen);
   const layoutStyle = useSelector((state) => state.layoutStyle.layoutStyle);
+  const isAuthenticated = useSelector( (state) => state.auth.isAuthenticated)
+    if(!isAuthenticated){
+        return <Navigate to='/login' replace={true}/>
+    }
   const closeSidebar = () => {
     dispath(layoutStyleActions.close());
   };

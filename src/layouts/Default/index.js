@@ -19,7 +19,7 @@ function Default(props) {
 
   return (
     <div className={classes.div}>
-        {basicDetails && <BasicDetails basicDetails = {basicDetails}/>}
+        {basicDetails && <BasicDetails basicDetails = {basicDetails} layoutStyle={props.layoutStyle}/>}
         {employmentDetails && <EmploymentDetails employmentDetails={employmentDetails} />}
         {projects && <Projects projects = {projects}/>}
         {skills && <Skills skills={skills[0]}/>}
