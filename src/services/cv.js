@@ -9,16 +9,20 @@ export const addCommonHeader = () => {
 
 
 const saveCv = (data) => {
+    addCommonHeader()
     return axios.post(`${process.env.REACT_APP_API_URL}cv/save-cv`,data)
 }
 const getCvs = () => {
+    addCommonHeader()
     return axios.get(`${process.env.REACT_APP_API_URL}cv/cvs`)
 }
 const updateCv = (data, id) => {
+    addCommonHeader()
     return axios.put(`${process.env.REACT_APP_API_URL}cv/edit-cv/${id}`,data)
 }
 
 const deleteCv = (id) => {
+    addCommonHeader()
     return axios.delete(`${process.env.REACT_APP_API_URL}cv/delete/${id}`)
 }
 

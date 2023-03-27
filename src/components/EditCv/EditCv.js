@@ -88,13 +88,14 @@ export const EditCv = () => {
       const [isLoading, setIsLoading] = useState(false)
       const navigate = useNavigate()
     
-      if(preData !== cvData){
-        window.addEventListener("beforeunload", (ev) => 
-        {  
-            ev.preventDefault();
-            return ev.returnValue = 'Are you sure you want to close? You may loss unsaved informaton, Save before leave';
-        });
-      }  
+      //promting alert
+      // if(preData !== cvData){
+      //   window.addEventListener("beforeunload", (ev) => 
+      //   {  
+      //       ev.preventDefault();
+      //       return ev.returnValue = 'Are you sure you want to close? You may loss unsaved informaton, Save before leave';
+      //   });
+      // }  
 
     //unauthorized redirect
     if(!isAuthenticated){

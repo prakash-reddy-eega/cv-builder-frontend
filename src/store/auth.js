@@ -1,6 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TOKEN } from '../utils/constants';
 
+const jwtToken = localStorage.getItem(TOKEN)
+const parsed = JSON.parse(jwtToken)
+
 const token = localStorage.getItem(TOKEN)
 
 const initialAuthState = {

@@ -1,5 +1,5 @@
 import { Preview } from "../../components/Preview/preview";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import classes from "./CreateCv.module.css";
 import { InputCard } from "../../UI/InputCard";
 import { DUMMY_PROFILE } from "../../utils/constants";
@@ -11,6 +11,7 @@ import { saveCv } from "../../services/cv";
 import BackdropLoader from "../../UI/BackdropLoader";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+
 
 
 const generateId = (count = 0) => {
@@ -97,18 +98,101 @@ export const CreateCv = () => {
     }
   }, [])
 
-  //closing prompt
+  // promting alert'
+  if(isDirty){
+    window.addEventListener("beforeunload", (ev) => 
+    {  
+        ev.preventDefault();
+        return ev.returnValue = 'Are you sure you want to close? You may loss unsaved informaton, Save before leave';
+    });
+  } 
 
 
+///testing code for prompt
+    const checkingResumeFilled = useCallback( () => {
+      const basic = cvData.basicDetails.map( eachObj => {
+        const { id, cardOpenToggle, ...rest } = eachObj
+        return rest
+      })
+      const employment = cvData.basicDetails.map( eachObj => {
+        const { id, cardOpenToggle, ...rest } = eachObj
+        return rest
+      })
+      const educate = cvData.education.map( eachObj => {
+        const { id, cardOpenToggle, ...rest } = eachObj
+        return rest
+      })
+      const sk = cvData.skills.map( eachObj => {
+        const { id, cardOpenToggle, ...rest } = eachObj
+        return rest
+      })
+      const proj = cvData.projects.map( eachObj => {
+        const { id, cardOpenToggle, ...rest } = eachObj
+        return rest
+      })
+      const socialPrf = cvData.socialprofiles.map( eachObj => {
+        const { id, cardOpenToggle, ...rest } = eachObj
+        return rest
+      })
 
+      const basic2 = preData.basicDetails.map( eachObj => {
+        const { id, cardOpenToggle, ...rest } = eachObj
+        return rest
+      })
+      const employment2 = cvData.basicDetails.map( eachObj => {
+        const { id, cardOpenToggle, ...rest } = eachObj
+        return rest
+      })
+      const educate2 = cvData.education.map( eachObj => {
+        const { id, cardOpenToggle, ...rest } = eachObj
+        return rest
+      })
+      const sk2 = cvData.skills.map( eachObj => {
+        const { id, cardOpenToggle, ...rest } = eachObj
+        return rest
+      })
+      const proj2 = cvData.projects.map( eachObj => {
+        const { id, cardOpenToggle, ...rest } = eachObj
+        return rest
+      })
+      const socialPrf2 = cvData.socialprofiles.map( eachObj => {
+        const { id, cardOpenToggle, ...rest } = eachObj
+        return rest
+      })
 
+      const cv1 = {
+        basicDetails: basic,
+        employmentDetails: employment,
+        education: educate,
+        projects: proj,
+        skills: sk,
+        socialprofiles: socialPrf
+      }
+      const cv2 = {
+        basicDetails: basic2,
+        employmentDetails: employment2,
+        education: educate2,
+        projects: proj2,
+        skills: sk2,
+        socialprofiles: socialPrf2
+      }
 
+      if(JSON.stringify(cv1.basicDetails[0]) === JSON.stringify(cv2.basicDetails[0])){
+        setIsDirty(false)
+      }else{
 
+        setIsDirty(true)
+      }
+    }, [cvData, preData])
+useEffect( () => {
+  checkingResumeFilled()
+},[checkingResumeFilled])
+/////
 
-  const isAuthenticated = useSelector( (state) => state.auth.isAuthenticated)
-    if(!isAuthenticated){
-        return <Navigate to='/login' replace={true}/>
-    }
+const isAuthenticated = useSelector( (state) => state.auth.isAuthenticated)
+if(!isAuthenticated){
+    return <Navigate to='/login' replace={true}/>
+}
 
 
 
