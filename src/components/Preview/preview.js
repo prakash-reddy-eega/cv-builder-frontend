@@ -1,5 +1,5 @@
 import { DEFAULT, SYDNEY, LONDON } from "../../utils/constants"
-import Default from "../../layouts/Default"
+import Default from '../CvTemplates/Default'
 import classes from './Preview.module.css'
 
 export const Preview = (props) => {

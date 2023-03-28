@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux"
 import { Navigate } from "react-router-dom"
-import Card from "../../UI/Card"
+import Card from "../../UI/Card/Card"
 import { useEffect, useCallback, useState } from "react"
 import { getProfile ,uploadProfile, removeProfile } from "../../services/auth"
-import BackdropLoader from "../../UI/BackdropLoader"
+import BackdropLoader from "../../UI/BackdropLoader/BackdropLoader"
 import { ToastContainer, toast } from "react-toastify"
 import { DUMMY_PROFILE } from "../../utils/constants"
 import classes from './Profile.module.css'
@@ -49,6 +49,7 @@ export const Profile = () => {
             const response = await removeProfile({profileImg: null}, profileData._id)
             setIsLoading(false)
             if (response.data.status === 1) {
+                toast.success(response.data.message)
                 fetchProfileDetails()
             } else if (response.data.status === 0) {
                 let message = "";
@@ -81,6 +82,7 @@ export const Profile = () => {
             const response = await uploadProfile({profileImg: profileData.profileImg}, profileData._id)
             setIsLoading(false)
             if (response.data.status === 1) {
+                toast.success(response.data.message)
                 fetchProfileDetails()
             } else if (response.data.status === 0) {
                 let message = "";

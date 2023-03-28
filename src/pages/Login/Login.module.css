@@ -70,4 +70,10 @@
   .errorText {
     color: #b40e0e;
   }
+
+  .notValidForm{
+    background-color: rgb(182, 179, 179) !important;
+    border: none;
+    cursor: not-allowed;
+  }
   

@@ -3,7 +3,7 @@ import Button from "../Home/Button"
 import classes from './MyCvs.module.css'
 import { Link, Navigate } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
-import BackdropLoader from "../../UI/BackdropLoader"
+import BackdropLoader from "../../UI/BackdropLoader/BackdropLoader"
 import { ToastContainer, toast } from "react-toastify"
 import { getCvs } from "../../services/cv"
 import { Tooltip } from "@mui/material"
@@ -11,9 +11,9 @@ import {RiDeleteBin7Line} from 'react-icons/ri'
 import {BiEdit} from 'react-icons/bi'
 import {VscPreview} from 'react-icons/vsc'
 import { useNavigate } from "react-router-dom"
-import ConfirmBox from "../../UI/ConfirmBox"
 import { deleteCv } from "../../services/cv"
 import {ImDownload3} from 'react-icons/im'
+import ConfirmBox from "../../UI/ConfirmBox/ConfirmBox"
 
 export const MyCVs = () => {
     const [myCvs, setCVs] = useState([])

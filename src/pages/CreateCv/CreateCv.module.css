@@ -12,6 +12,14 @@
     border-radius: 10px;
     cursor: pointer;
 }
+.sidebarBackground{
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    position: fixed;
+    top: 0px;
+    opacity: 0.5;
+}
 @media screen and (min-width: 1301px){
     .previewButton{
         display: none
@@ -125,4 +133,12 @@
     border: none;
     margin: 10px;
     background-color: rgb(134, 135, 134);
+}
+
+.templatesButton{
+    margin-left: 10px;
+    height: 30px;
+    border-radius: 5px;
+    background-color: aquamarine;
+    border: none;
 }

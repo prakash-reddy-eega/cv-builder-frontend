@@ -1,7 +1,6 @@
 import useInput from "../../hooks/user-input";
-import Card from "../../UI/Card";
 import classes from "./Login.module.css";
-import Button from "../../UI/Button";
+import Button from "../../UI/Button/Button";
 import { login } from "../../services/auth";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,9 +10,10 @@ import { authActions } from "../../store/auth";
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { TOKEN } from "../../utils/constants";
-import BackdropLoader from "../../UI/BackdropLoader";
+import BackdropLoader from "../../UI/BackdropLoader/BackdropLoader";
 import { useState } from "react";
 import { addCommonHeader } from "../../services/cv";
+import Card from "../../UI/Card/Card";
 
 const isNotEmpty = (value) => value.trim() !== "";
 const isPassword = (value) => value.length >= 6
@@ -140,10 +140,10 @@ export const Login = (props) => {
         </div>  
         <div className={classes.formActions}>
           <p className={classes.text}>New User? <Link to='/signup'>SignUp</Link> </p> 
-          <Button type={"submit"} disabled={!formIsValid}>
+          <Button type={"submit"} formValid={formIsValid} >
             SignIn
           </Button>
-        </div>
+        </div> 
       </form>
     </Card>
     </>

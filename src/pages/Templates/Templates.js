@@ -3,12 +3,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { layoutStyleActions } from "../../store/LayoutStyle";
 import classes from "./Templates.module.css";
 import Button from "../Home/Button";
-import SideBar from "../../UI/SideBar";
+import SideBar from "../../UI/SideBar/SideBar";
 import { Link, Navigate } from "react-router-dom";
-import { DEFAULT, LONDON, SYDNEY } from "../../utils/constants";
+import { Preview } from "../../components/Preview/preview";
+import { DUMMY_CV } from "../../utils/constants";
 
 export const Templates = () => {
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
   const isOpen = useSelector((state) => state.layoutStyle.isOpen);
   const layoutStyle = useSelector((state) => state.layoutStyle.layoutStyle);
   const isAuthenticated = useSelector( (state) => state.auth.isAuthenticated)
@@ -16,11 +17,11 @@ export const Templates = () => {
         return <Navigate to='/login' replace={true}/>
     }
   const closeSidebar = () => {
-    dispath(layoutStyleActions.close());
+    dispatch(layoutStyleActions.close());
   };
 
   const openSidebar = () => {
-    dispath(layoutStyleActions.open());
+    dispatch(layoutStyleActions.open());
   };
 
   return (
@@ -49,27 +50,7 @@ export const Templates = () => {
       </div>
       <h3>Selected {layoutStyle} Template</h3>
       <div className={classes.card}>
-        {layoutStyle === DEFAULT && (
-          <img
-            src="https://s3.resume.io/cdn-cgi/image/width=852,format=auto/uploads/local_template_image/image/370/persistent-resource/stockholm-resume-templates.jpg"
-            className={classes.templateContainer}
-            alt='cv template'
-          />
-        )}
-        {layoutStyle === SYDNEY && (
-          <img
-            src="https://s3.resume.io/cdn-cgi/image/width=852,format=auto/uploads/local_template_image/image/441/persistent-resource/sydney-resume-templates.jpg"
-            className={classes.templateContainer}
-            alt='cv template'
-          />
-        )}
-        {layoutStyle === LONDON && (
-          <img
-            src="https://s3.resume.io/cdn-cgi/image/width=852,format=auto/uploads/local_template_image/image/488/persistent-resource/dublin-resume-templates.jpg"
-            className={classes.templateContainer}
-            alt='cv template'
-          />
-        )}
+        <Preview cvData={DUMMY_CV} layoutStyle={layoutStyle}/>
       </div>
     </div>
   );

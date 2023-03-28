@@ -1,16 +1,19 @@
 
 import classes from "./SideBar.module.css";
 import { useSelector, useDispatch } from 'react-redux';
-import { layoutStyleActions } from "../store/LayoutStyle";
-import { TEMPLATES } from "../utils/constants";
+import { layoutStyleActions } from "../../store/LayoutStyle";
+import { TEMPLATES } from "../../utils/constants";
 
-const SideBar = () => {
+const SideBar = (props) => {
     const dispatch = useDispatch()
     const layoutStyle = useSelector( state => state.layoutStyle.layoutStyle)
     const isOpen = useSelector( state => state.layoutStyle.isOpen)
     const onChangeTemplate = (id) => {
         dispatch(layoutStyleActions.onStyleChange(id))
         dispatch(layoutStyleActions.close())
+        if(props.onChangeTemplate){
+          props.onChangeTemplate(id)
+        }
     }
   return (
     <>

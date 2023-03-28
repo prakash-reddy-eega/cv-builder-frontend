@@ -6,9 +6,8 @@ import {GiHamburgerMenu} from 'react-icons/gi'
 import { useState } from 'react';
 import {AiFillCloseCircle} from 'react-icons/ai'
 import { TOKEN } from '../../utils/constants';
-import Modal from '../../UI/ConfirmBox';
+import Modal from '../../UI/ConfirmBox/ConfirmBox';
 import { authActions } from '../../store/auth';
-import { Navigate } from 'react-router-dom';
 
 const MainHeader = (props) => {
   const [showTabs, setShowTabs] = useState(false)

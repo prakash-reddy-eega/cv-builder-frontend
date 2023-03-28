@@ -20,3 +20,10 @@
   .button:focus {
     outline: none;
   }
+  .disabled{
+    height: 35px;
+    width: 80px;
+    font-weight: 500;
+    border-radius: 5px;
+    cursor: not-allowed;
+  }

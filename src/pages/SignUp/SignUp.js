@@ -1,7 +1,7 @@
 import useInput from "../../hooks/user-input";
-import Card from "../../UI/Card";
+import Card from "../../UI/Card/Card";
 import classes from "./SignUp.module.css";
-import Button from "../../UI/Button";
+import Button from "../../UI/Button/Button";
 import { register } from "../../services/auth";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,7 +11,7 @@ import { authActions } from "../../store/auth";
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { TOKEN } from "../../utils/constants";
-import BackdropLoader from "../../UI/BackdropLoader";
+import BackdropLoader from "../../UI/BackdropLoader/BackdropLoader";
 import { useState } from "react";
 
 const isNotEmpty = (value) => value.trim() !== "";
@@ -247,7 +247,7 @@ export const SignUp = (props) => {
         </div>  
         <div className={classes.formActions}>
           <p className={classes.text}>Registered User? <Link to='/login'>Login</Link> </p> 
-          <Button type={"submit"} disabled={!formIsValid}>
+          <Button type={"submit"} formValid={formIsValid}>
             SignUp
           </Button>
         </div>
